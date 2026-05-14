@@ -25,3 +25,8 @@ Database
 
 
 MySQL
+
+## Milestone 3 — Dataset Preprocessing
+- Synthetic data generated using Python + Faker (see milestone_3/generate.py)
+- 5 CSV files, one per table, all in milestone_3/
+- Dataflow documented in milestone_3/DATAFLOW.md
