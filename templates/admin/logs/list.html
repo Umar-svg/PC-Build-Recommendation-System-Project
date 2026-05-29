@@ -1,0 +1,172 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Recommendation Logs{% endblock %}
+{% block page_title %}Recommendation Logs{% endblock %}
+
+{% block content %}
+
+<div class="panel mb-4">
+  <div class="panel-header">
+    <h5><i class="bi bi-funnel me-2"></i>Filter Logs</h5>
+    <span class="text-muted small">{{ total_count }} matching request(s)</span>
+  </div>
+  <div class="panel-body" style="padding: 18px 22px;">
+    <form method="GET" class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label small text-muted mb-1">Search user / email</label>
+        <input type="text" name="q" class="form-control form-control-sm"
+               placeholder="Name or email" value="{{ q }}">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small text-muted mb-1">Purpose</label>
+        <select name="purpose" class="form-select form-select-sm">
+          <option value="">All purposes</option>
+          {% for p in distinct_purposes %}
+            <option value="{{ p }}" {% if p == purpose %}selected{% endif %}>{{ p }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% if distinct_preferences %}
+      <div class="col-md-2">
+        <label class="form-label small text-muted mb-1">Preference</label>
+        <select name="preference" class="form-select form-select-sm">
+          <option value="">All</option>
+          {% for pref in distinct_preferences %}
+            <option value="{{ pref }}" {% if pref == preference %}selected{% endif %}>{{ pref }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endif %}
+      <div class="col-md-2">
+        <label class="form-label small text-muted mb-1">From</label>
+        <input type="date" name="from" class="form-control form-control-sm" value="{{ date_from }}">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small text-muted mb-1">To</label>
+        <input type="date" name="to" class="form-control form-control-sm" value="{{ date_to }}">
+      </div>
+      <div class="col-md-1 d-flex align-items-end">
+        <button class="btn btn-primary btn-sm w-100" type="submit">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+    </form>
+    {% if q or purpose or preference or date_from or date_to %}
+      <div class="mt-3">
+        <a href="{{ url_for('logs') }}" class="btn btn-sm btn-outline-secondary">
+          <i class="bi bi-x-circle me-1"></i> Clear filters
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-header">
+    <h5><i class="bi bi-clipboard-data me-2"></i>Build Requests &amp; Recommendations</h5>
+    <span class="text-muted small">Page {{ page }} of {{ total_pages }}</span>
+  </div>
+  <div class="panel-body">
+    {% if logs %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>User</th>
+          <th>Purpose</th>
+          <th>Preference</th>
+          <th>Budget</th>
+          <th>Date</th>
+          <th class="text-center">Builds</th>
+          <th class="text-end">Total Value</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in logs %}
+        <tr>
+          <td><strong>#{{ r.request_id }}</strong></td>
+          <td>
+            <div style="font-weight: 500; color: #0f172a;">{{ r.full_name }}</div>
+            <div class="small text-muted">{{ r.email }}</div>
+          </td>
+          <td><span class="badge-purpose">{{ r.purpose }}</span></td>
+          <td>
+            {% if r.build_preference == 'Maximum Performance' %}
+              <span class="badge bg-danger-subtle text-danger">{{ r.build_preference }}</span>
+            {% elif r.build_preference == 'Budget Saver' %}
+              <span class="badge bg-success-subtle text-success">{{ r.build_preference }}</span>
+            {% else %}
+              <span class="badge bg-primary-subtle text-primary">{{ r.build_preference or 'Balanced' }}</span>
+            {% endif %}
+          </td>
+          <td>
+            <div>${{ "%.2f"|format(r.budget) }}</div>
+            <div class="small text-muted">₨{{ "{:,.0f}".format(r.budget * usd_to_pkr) }}</div>
+          </td>
+          <td class="text-muted small">{{ r.request_date }}</td>
+          <td class="text-center">
+            {% if r.build_count > 0 %}
+              <span class="badge bg-success">{{ r.build_count }}</span>
+            {% else %}
+              <span class="badge bg-secondary">0</span>
+            {% endif %}
+          </td>
+          <td class="text-end">
+            {% if r.total_value > 0 %}
+              <div>${{ "%.2f"|format(r.total_value) }}</div>
+              <div class="small text-muted">₨{{ "{:,.0f}".format(r.total_value * usd_to_pkr) }}</div>
+            {% else %}
+              <span class="text-muted small">—</span>
+            {% endif %}
+          </td>
+          <td class="text-end">
+            <a href="{{ url_for('log_detail', request_id=r.request_id) }}"
+               class="btn btn-sm btn-outline-primary">
+              <i class="bi bi-eye"></i> View
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% if total_pages > 1 %}
+    <div class="d-flex justify-content-between align-items-center px-3 py-3">
+      <div class="text-muted small">
+        Showing {{ (page - 1) * 25 + 1 }}–{{ [page * 25, total_count]|min }} of {{ total_count }}
+      </div>
+      <nav>
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+            <a class="page-link" href="?q={{ q }}&purpose={{ purpose }}&preference={{ preference }}&from={{ date_from }}&to={{ date_to }}&page={{ page - 1 }}">
+              <i class="bi bi-chevron-left"></i>
+            </a>
+          </li>
+          {% set start = [1, page - 2]|max %}
+          {% set end   = [total_pages, page + 2]|min %}
+          {% for p in range(start, end + 1) %}
+            <li class="page-item {% if p == page %}active{% endif %}">
+              <a class="page-link" href="?q={{ q }}&purpose={{ purpose }}&preference={{ preference }}&from={{ date_from }}&to={{ date_to }}&page={{ p }}">{{ p }}</a>
+            </li>
+          {% endfor %}
+          <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
+            <a class="page-link" href="?q={{ q }}&purpose={{ purpose }}&preference={{ preference }}&from={{ date_from }}&to={{ date_to }}&page={{ page + 1 }}">
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="text-center text-muted py-5">
+      <i class="bi bi-inbox" style="font-size: 2.5rem;"></i>
+      <p class="mt-3 mb-0">No build requests match your filters.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,191 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Settings{% endblock %}
+{% block page_title %}Settings{% endblock %}
+
+{% block content %}
+
+<div class="row g-3">
+  <!-- Left column: profile + password -->
+  <div class="col-lg-7">
+
+    <!-- Profile -->
+    <div class="panel mb-3">
+      <div class="panel-header">
+        <h5><i class="bi bi-person-badge me-2"></i>Admin Profile</h5>
+      </div>
+      <div class="panel-body" style="padding: 22px;">
+        <form method="POST" action="{{ url_for('settings') }}">
+          <input type="hidden" name="action" value="update_profile">
+
+          <div class="mb-3">
+            <label class="form-label small text-muted mb-1">Full Name</label>
+            <input type="text" name="full_name" class="form-control"
+                   value="{{ admin.full_name }}" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small text-muted mb-1">Email</label>
+            <input type="email" class="form-control" value="{{ admin.email }}" disabled>
+            <div class="form-text small">Email is the login identifier and cannot be changed here.</div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label small text-muted mb-1">Role</label>
+            <div>
+              <span class="badge bg-primary">{{ admin.role|capitalize }}</span>
+              <span class="text-muted small ms-2">User ID #{{ admin.user_id }}</span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check2 me-1"></i> Save Profile
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Password -->
+    <div class="panel mb-3">
+      <div class="panel-header">
+        <h5><i class="bi bi-shield-lock me-2"></i>Change Password</h5>
+      </div>
+      <div class="panel-body" style="padding: 22px;">
+        <form method="POST" action="{{ url_for('settings') }}">
+          <input type="hidden" name="action" value="change_password">
+
+          <div class="mb-3">
+            <label class="form-label small text-muted mb-1">Current Password</label>
+            <input type="password" name="current_password" class="form-control" required
+                   autocomplete="current-password">
+          </div>
+
+          <div class="row g-2">
+            <div class="col-md-6 mb-3">
+              <label class="form-label small text-muted mb-1">New Password</label>
+              <input type="password" name="new_password" class="form-control" required
+                     minlength="6" autocomplete="new-password">
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label small text-muted mb-1">Confirm New Password</label>
+              <input type="password" name="confirm_password" class="form-control" required
+                     minlength="6" autocomplete="new-password">
+            </div>
+          </div>
+
+          <div class="alert alert-warning small py-2 mb-3">
+            <i class="bi bi-info-circle me-1"></i>
+            Minimum 6 characters. After changing, you can still log in with the
+            built-in admin email — the password is updated for that account too.
+          </div>
+
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-key me-1"></i> Update Password
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Right column: system info -->
+  <div class="col-lg-5">
+
+    <div class="panel mb-3">
+      <div class="panel-header">
+        <h5><i class="bi bi-server me-2"></i>System Information</h5>
+      </div>
+      <div class="panel-body">
+        <table class="table">
+          <tbody>
+            <tr>
+              <td class="text-muted small">MySQL Version</td>
+              <td class="text-end"><strong>{{ system_info.mysql_version }}</strong></td>
+            </tr>
+            <tr>
+              <td class="text-muted small">Database</td>
+              <td class="text-end"><code>{{ system_info.db_name }}</code></td>
+            </tr>
+            <tr>
+              <td class="text-muted small">Host</td>
+              <td class="text-end"><code>{{ system_info.db_host }}:{{ system_info.db_port }}</code></td>
+            </tr>
+            <tr>
+              <td class="text-muted small">Tables in DB</td>
+              <td class="text-end"><strong>{{ system_info.table_count }}</strong></td>
+            </tr>
+            <tr>
+              <td class="text-muted small">USD &rarr; PKR Rate</td>
+              <td class="text-end"><strong>₨{{ "%.2f"|format(system_info.usd_to_pkr) }}</strong></td>
+            </tr>
+            <tr>
+              <td class="text-muted small">Built-in Admin Email</td>
+              <td class="text-end"><code>{{ system_info.builtin_admin_email }}</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel mb-3">
+      <div class="panel-header">
+        <h5><i class="bi bi-database-fill me-2"></i>Data Counts</h5>
+      </div>
+      <div class="panel-body">
+        <table class="table">
+          <tbody>
+            <tr>
+              <td class="text-muted small">Total Users</td>
+              <td class="text-end"><strong>{{ system_info.total_users_all }}</strong></td>
+            </tr>
+            <tr>
+              <td class="text-muted small">Active Components</td>
+              <td class="text-end">
+                <strong>{{ system_info.active_components }}</strong>
+                <span class="text-muted small">/ {{ system_info.total_components_all }} total</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="text-muted small">Build Requests</td>
+              <td class="text-end"><strong>{{ system_info.total_requests }}</strong></td>
+            </tr>
+            <tr>
+              <td class="text-muted small">Recommended Builds</td>
+              <td class="text-end"><strong>{{ system_info.total_builds }}</strong></td>
+            </tr>
+            <tr>
+              <td class="text-muted small">Build &harr; Component Links</td>
+              <td class="text-end"><strong>{{ system_info.total_build_components }}</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <h5><i class="bi bi-link-45deg me-2"></i>Quick Links</h5>
+      </div>
+      <div class="panel-body" style="padding: 14px 22px;">
+        <a href="{{ url_for('components') }}" class="btn btn-outline-primary btn-sm w-100 mb-2 text-start">
+          <i class="bi bi-cpu me-2"></i>Manage Components
+        </a>
+        <a href="{{ url_for('prices') }}" class="btn btn-outline-primary btn-sm w-100 mb-2 text-start">
+          <i class="bi bi-currency-dollar me-2"></i>Update Prices
+        </a>
+        <a href="{{ url_for('users') }}" class="btn btn-outline-primary btn-sm w-100 mb-2 text-start">
+          <i class="bi bi-people me-2"></i>View Users
+        </a>
+        <a href="{{ url_for('logs') }}" class="btn btn-outline-primary btn-sm w-100 mb-2 text-start">
+          <i class="bi bi-clipboard-data me-2"></i>Recommendation Logs
+        </a>
+        <a href="{{ url_for('analytics') }}" class="btn btn-outline-primary btn-sm w-100 text-start">
+          <i class="bi bi-bar-chart-line me-2"></i>Analytics
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

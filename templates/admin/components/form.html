@@ -1,0 +1,115 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ form_title }}{% endblock %}
+{% block page_title %}{{ form_title }}{% endblock %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col-lg-8">
+    <div class="panel">
+      <div class="panel-header">
+        <h5>
+          <i class="bi bi-{% if comp %}pencil-square{% else %}plus-circle{% endif %} me-2"></i>
+          Component Details
+        </h5>
+        <a href="{{ url_for('components') }}" class="btn btn-sm btn-outline-secondary">
+          <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+      </div>
+
+      <div style="padding: 24px;">
+        <form method="POST">
+
+          <div class="row g-3">
+            <div class="col-md-8">
+              <label class="form-label">Component Name <span class="text-danger">*</span></label>
+              <input type="text" name="component_name" class="form-control" required
+                     placeholder="e.g. GeForce RTX 4080"
+                     value="{{ comp.component_name if comp else '' }}">
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Type <span class="text-danger">*</span></label>
+              <select name="component_type" class="form-select" required>
+                <option value="">Select type...</option>
+                {% for t in component_types %}
+                <option value="{{ t }}"
+                  {% if comp and comp.component_type == t %}selected{% endif %}>
+                  {{ t }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Brand <span class="text-danger">*</span></label>
+              <input type="text" name="brand" class="form-control" required
+                     placeholder="e.g. NVIDIA, AMD, Corsair"
+                     value="{{ comp.brand if comp else '' }}">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Price (USD) <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" name="price" step="0.01" min="0" class="form-control" required
+                       placeholder="0.00"
+                       value="{{ '%.2f'|format(comp.price) if comp else '' }}">
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Specifications</label>
+              <textarea name="specifications" class="form-control" rows="2"
+                placeholder="e.g. 16GB GDDR6X, 9728 CUDA cores"
+              >{{ comp.specifications if comp and comp.specifications else '' }}</textarea>
+              <div class="form-text">Optional. Technical specs of the component.</div>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Compatibility Info</label>
+              <textarea name="compatibility_info" class="form-control" rows="2"
+                placeholder="e.g. PCIe 4.0 x16; 1x 16-pin power"
+              >{{ comp.compatibility_info if comp and comp.compatibility_info else '' }}</textarea>
+              <div class="form-text">
+                Optional. Used by the recommender to check compatibility
+                (e.g. socket type, RAM generation).
+              </div>
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          <div class="d-flex justify-content-between">
+            <a href="{{ url_for('components') }}" class="btn btn-outline-secondary">
+              Cancel
+            </a>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-check-lg me-1"></i>
+              {% if comp %}Save Changes{% else %}Add Component{% endif %}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="panel">
+      <div class="panel-header">
+        <h5><i class="bi bi-info-circle me-2"></i>Tips</h5>
+      </div>
+      <div style="padding: 18px 22px; font-size: 0.92rem; color: #475569;">
+        <ul class="ps-3 mb-0" style="line-height: 1.7;">
+          <li><strong>Name</strong> should match real hardware (e.g. "Ryzen 7 7700X").</li>
+          <li><strong>Type</strong> determines which slot this fills in a recommended build.</li>
+          <li><strong>Compatibility Info</strong> is what the recommender reads to match CPUs with motherboards (sockets) and RAM with boards (DDR4/DDR5).</li>
+          <li>Use clear keywords like <code>AM5</code>, <code>LGA1700</code>, <code>DDR5</code>.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

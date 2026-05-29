@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Admin Login — PC Build Recommendation System{% endblock %}
+
+{% block content %}
+<style>
+  .admin-login-wrap {
+    max-width: 420px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    border-top: 4px solid #dc2626;
+  }
+  .admin-login-wrap h1 {
+    margin: 0 0 6px;
+    text-align: center;
+  }
+  .admin-login-wrap .subtitle {
+    text-align: center;
+    color: #6b7280;
+    margin-bottom: 28px;
+    font-size: 0.95em;
+  }
+  .admin-login-wrap .form-row { margin-bottom: 16px; }
+  .admin-login-wrap label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 0.9em;
+  }
+  .admin-login-wrap input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.95em;
+  }
+  .admin-login-wrap .btn-admin {
+    width: 100%;
+    background: #dc2626;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  .admin-login-wrap .btn-admin:hover { background: #b91c1c; }
+  .admin-login-wrap .back-link {
+    display: block;
+    text-align: center;
+    margin-top: 16px;
+    color: #6b7280;
+    text-decoration: none;
+    font-size: 0.9em;
+  }
+  .admin-login-wrap .back-link:hover { color: #2563eb; }
+</style>
+
+<div class="admin-login-wrap">
+  <h1>🛠️ Admin Login</h1>
+  <p class="subtitle">Authorised administrators only.</p>
+
+  <form method="post">
+    <div class="form-row">
+      <label for="email">Admin Email</label>
+      <input id="email" name="email" type="email" required autofocus>
+    </div>
+    <div class="form-row">
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" required>
+    </div>
+    <button type="submit" class="btn-admin">Log In as Admin</button>
+  </form>
+
+  <a href="{{ url_for('landing') }}" class="back-link">← Back to home</a>
+</div>
+{% endblock %}

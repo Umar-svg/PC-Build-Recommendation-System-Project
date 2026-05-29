@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Your Build — PC Build Recommender{% endblock %}
+
+{% block content %}
+<div class="dashboard-hero" style="padding: 2rem 2.5rem;">
+    <h1>Your Recommended Build{% if builds|length > 1 %}s{% endif %}</h1>
+    <p>
+        Purpose: <strong>{{ req.purpose }}</strong> &nbsp;·&nbsp;
+        Budget:
+        {% if req.currency == 'PKR' %}
+            <strong>₨{{ "{:,.0f}".format(req.budget * usd_to_pkr) }} PKR</strong>
+        {% else %}
+            <strong>${{ "%.2f"|format(req.budget) }} USD</strong>
+        {% endif %}
+        &nbsp;·&nbsp;
+        Requested: <strong>{{ req.request_date }}</strong>
+    </p>
+</div>
+
+<div class="builds-grid">
+    {% for build in builds %}
+    <div class="build-card">
+        <div class="build-header">
+            <div>
+                <h3>Build #{{ loop.index }}</h3>
+                <span class="build-date">{{ build.recommendation_date }}</span>
+            </div>
+            <div class="build-total">
+                <span class="total-label">Total ({{ req.currency }})</span>
+                <span class="total-amount">
+                    {% if req.currency == 'PKR' %}
+                        ₨{{ "{:,.0f}".format(build.total_cost * usd_to_pkr) }}
+                    {% else %}
+                        ${{ "%.2f"|format(build.total_cost) }}
+                    {% endif %}
+                </span>
+                {% set savings = req.budget - build.total_cost %}
+                {% if savings > 10 %}
+                <span class="build-savings">
+                    {% if req.currency == 'PKR' %}
+                        💰 Saved ₨{{ "{:,.0f}".format(savings * usd_to_pkr) }} from your budget
+                    {% else %}
+                        💰 Saved ${{ "%.2f"|format(savings) }} from your budget
+                    {% endif %}
+                </span>
+                {% endif %}
+            </div>
+        </div>
+
+        <table class="parts-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Type</th>
+                    <th>Component</th>
+                    <th>Brand</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for part in build.parts %}
+                <tr>
+                    <td style="width: 56px;">
+                        {% if part.image_url %}
+                        <img src="{{ part.image_url }}" alt="{{ part.component_name }}"
+                             style="width: 44px; height: 44px; object-fit: contain;
+                                    border-radius: 8px; background: #f8fafc; display: block;"
+                             onerror="this.style.display='none';
+                                      this.nextElementSibling.style.display='flex';">
+                        <span style="display: none; width: 44px; height: 44px;
+                                     align-items: center; justify-content: center;
+                                     background: #f1f5f9; border-radius: 8px; color: #94a3b8;">
+                            🧩
+                        </span>
+                        {% else %}
+                        <span style="display: flex; width: 44px; height: 44px;
+                                     align-items: center; justify-content: center;
+                                     background: #f1f5f9; border-radius: 8px; color: #94a3b8;">
+                            🧩
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td><span class="type-badge">{{ part.component_type }}</span></td>
+                    <td>
+                        <strong>{{ part.component_name }}</strong>
+                        {% if part.specifications %}
+                        <br><small>{{ part.specifications }}</small>
+                        {% endif %}
+                    </td>
+                    <td>{{ part.brand }}</td>
+                    <td>{{ part.quantity }}</td>
+                    <td>
+                        {% if req.currency == 'PKR' %}
+                            ₨{{ "{:,.0f}".format((part.price * part.quantity)|float * usd_to_pkr) }}
+                        {% else %}
+                            ${{ "%.2f"|format((part.price * part.quantity)|float) }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+</div>
+
+<div style="text-align: center; margin-top: 2rem;">
+    <a href="{{ url_for('build_request') }}" class="btn-primary"
+       style="display: inline-block; width: auto; padding: 0.9rem 2rem; text-decoration: none;">
+        Request Another Build
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Components{% endblock %}
+{% block page_title %}Manage Components{% endblock %}
+
+{% block content %}
+
+<!-- Top action bar -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div class="text-muted">
+    <i class="bi bi-cpu me-1"></i>
+    {{ components|length }} component(s)
+  </div>
+  <a href="{{ url_for('component_new') }}" class="btn btn-primary">
+    <i class="bi bi-plus-lg me-1"></i> Add New Component
+  </a>
+</div>
+
+<!-- Filter / Search Panel -->
+<div class="panel mb-3">
+  <div class="panel-body" style="padding: 16px 22px;">
+    <form method="GET" class="row g-2 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label small text-muted mb-1">Search</label>
+        <input type="text" name="q" value="{{ q }}" class="form-control"
+               placeholder="Search by name or brand...">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small text-muted mb-1">Type</label>
+        <select name="type" class="form-select">
+          <option value="">All Types</option>
+          {% for t in component_types %}
+          <option value="{{ t }}" {% if type_filter==t %}selected{% endif %}>{{ t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small text-muted mb-1">Status</label>
+        <select name="status" class="form-select">
+          <option value="active"   {% if status=='active' %}selected{% endif %}>Active Only</option>
+          <option value="inactive" {% if status=='inactive' %}selected{% endif %}>Inactive Only</option>
+          <option value="all"      {% if status=='all' %}selected{% endif %}>All</option>
+        </select>
+      </div>
+      <div class="col-md-2 d-flex gap-2">
+        <button type="submit" class="btn btn-outline-primary flex-grow-1">
+          <i class="bi bi-funnel"></i> Filter
+        </button>
+        <a href="{{ url_for('components') }}" class="btn btn-outline-secondary" title="Clear">
+          <i class="bi bi-x-lg"></i>
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Components table -->
+<div class="panel">
+  <div class="panel-body">
+    {% if components %}
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Brand</th>
+          <th class="text-end">Price (USD)</th>
+          <th class="text-center">Used In</th>
+          <th class="text-center">Status</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in components %}
+        <tr>
+          <td>
+            <div style="font-weight:500; color:#0f172a;">{{ c.component_name }}</div>
+          </td>
+          <td><span class="badge bg-light text-dark">{{ c.component_type }}</span></td>
+          <td class="text-muted">{{ c.brand }}</td>
+          <td class="text-end" style="font-weight:500;">${{ "%.2f"|format(c.price) }}</td>
+          <td class="text-center">
+            {% if c.times_used > 0 %}
+              <span class="badge bg-info">{{ c.times_used }} builds</span>
+            {% else %}
+              <span class="text-muted small">Unused</span>
+            {% endif %}
+          </td>
+          <td class="text-center">
+            {% if c.is_active %}
+              <span class="badge bg-success">Active</span>
+            {% else %}
+              <span class="badge bg-secondary">Inactive</span>
+            {% endif %}
+          </td>
+          <td class="text-end">
+            <div class="btn-group btn-group-sm">
+              <a href="{{ url_for('component_edit', cid=c.component_id) }}"
+                 class="btn btn-outline-primary" title="Edit">
+                <i class="bi bi-pencil"></i>
+              </a>
+
+              <form method="POST" action="{{ url_for('component_toggle', cid=c.component_id) }}"
+                    style="display:inline;">
+                <button type="submit"
+                        class="btn btn-outline-{% if c.is_active %}warning{% else %}success{% endif %}"
+                        title="{% if c.is_active %}Deactivate{% else %}Restore{% endif %}">
+                  <i class="bi bi-{% if c.is_active %}eye-slash{% else %}arrow-counterclockwise{% endif %}"></i>
+                </button>
+              </form>
+
+              {% if c.times_used == 0 %}
+              <form method="POST" action="{{ url_for('component_delete', cid=c.component_id) }}"
+                    style="display:inline;"
+                    onsubmit="return confirm('Permanently delete &quot;{{ c.component_name }}&quot;? This cannot be undone.');">
+                <button type="submit" class="btn btn-outline-danger" title="Delete">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="text-center text-muted py-5">
+      <i class="bi bi-inbox" style="font-size: 2.5rem;"></i>
+      <p class="mt-2 mb-0">No components match your filters.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

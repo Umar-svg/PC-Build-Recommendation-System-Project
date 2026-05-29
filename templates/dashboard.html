@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — PC Build Recommender{% endblock %}
+
+{% block content %}
+<div class="dashboard-hero">
+    <h1>Welcome, {{ session.get('full_name') }} 👋</h1>
+    <p>Get personalized PC build recommendations tailored to your budget and use case — whether it's gaming, video editing, programming, or just everyday work.</p>
+</div>
+
+<div class="action-grid">
+    <a href="{{ url_for('build_request') }}" class="action-card">
+        <div class="icon">🖥️</div>
+        <h3>Request a New Build</h3>
+        <p>Tell us your budget and purpose. We'll recommend compatible components within seconds.</p>
+    </a>
+
+    <a href="{{ url_for('history') }}" class="action-card">
+        <div class="icon">📋</div>
+        <h3>View My History</h3>
+        <p>Browse all your past build requests and their recommended configurations.</p>
+    </a>
+
+    {% if session.get('role') == 'admin' %}
+    <a href="{{ url_for('admin_components') }}" class="action-card">
+        <div class="icon">⚙️</div>
+        <h3>Admin Panel</h3>
+        <p>Manage the component catalog and view system-wide reports.</p>
+    </a>
+    {% endif %}
+</div>
+
+<div class="stats-section" style="margin-top: 4rem;">
+    <h2 style="margin-bottom: 1.5rem; font-size: 1.5rem;">Your Personal Statistics 📊</h2>
+    
+    <div class="action-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+        
+        <div class="action-card" style="text-align: center; padding: 2rem;">
+            <div style="font-size: 3rem; font-weight: 800; color: #8b5cf6; margin-bottom: 0.5rem;">
+                {{ stats.total_requests }}
+            </div>
+            <h3 style="margin: 0; font-size: 1rem; color: #64748b;">Total Requests</h3>
+        </div>
+
+        <div class="action-card" style="text-align: center; padding: 2rem;">
+            <div style="font-size: 3rem; font-weight: 800; color: #3b82f6; margin-bottom: 0.5rem;">
+                {{ stats.total_builds }}
+            </div>
+            <h3 style="margin: 0; font-size: 1rem; color: #64748b;">Builds Generated For You</h3>
+        </div>
+
+        <div class="action-card" style="text-align: center; padding: 2rem;">
+            <div style="font-size: 1.5rem; font-weight: 800; color: #10b981; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; height: 3.5rem;">
+                {{ stats.top_purpose }}
+            </div>
+            <h3 style="margin: 0; font-size: 1rem; color: #64748b;">Most Frequent Use</h3>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

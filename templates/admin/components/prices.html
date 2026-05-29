@@ -1,0 +1,87 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Prices{% endblock %}
+{% block page_title %}Manage Prices{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div class="text-muted">
+    <i class="bi bi-currency-dollar me-1"></i>
+    Bulk price editor — edit any prices, then click <strong>Save All Changes</strong>
+  </div>
+</div>
+
+<!-- Filter -->
+<div class="panel mb-3">
+  <div class="panel-body" style="padding: 16px 22px;">
+    <form method="GET" class="row g-2 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label small text-muted mb-1">Filter by type</label>
+        <select name="type" class="form-select" onchange="this.form.submit()">
+          <option value="">All Types</option>
+          {% for t in component_types %}
+          <option value="{{ t }}" {% if type_filter==t %}selected{% endif %}>{{ t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <a href="{{ url_for('prices') }}" class="btn btn-outline-secondary w-100">
+          <i class="bi bi-x-lg"></i> Clear
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Bulk edit form -->
+<form method="POST" action="{{ url_for('prices', type=type_filter) }}">
+<div class="panel">
+  <div class="panel-body">
+    {% if components %}
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>Component</th>
+          <th>Type</th>
+          <th>Brand</th>
+          <th style="width: 180px;" class="text-end">Price (USD)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in components %}
+        <tr>
+          <td>
+            <div style="font-weight:500; color:#0f172a;">{{ c.component_name }}</div>
+          </td>
+          <td><span class="badge bg-light text-dark">{{ c.component_type }}</span></td>
+          <td class="text-muted">{{ c.brand }}</td>
+          <td>
+            <div class="input-group input-group-sm">
+              <span class="input-group-text">$</span>
+              <input type="number" step="0.01" min="0" class="form-control text-end"
+                     name="price_{{ c.component_id }}"
+                     value="{{ '%.2f'|format(c.price) }}">
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="d-flex justify-content-end mt-3 px-3 pb-3">
+      <button type="submit" class="btn btn-primary">
+        <i class="bi bi-check-lg me-1"></i> Save All Changes
+      </button>
+    </div>
+    {% else %}
+    <div class="text-center text-muted py-5">
+      <i class="bi bi-inbox" style="font-size: 2.5rem;"></i>
+      <p class="mt-2 mb-0">No active components to display.</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+</form>
+
+{% endblock %}

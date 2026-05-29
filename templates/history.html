@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}My History — PC Build Recommender{% endblock %}
+
+{% block content %}
+<div class="dashboard-hero" style="padding: 2rem 2.5rem;">
+    <h1>My Build History</h1>
+    <p>
+        {% if requests %}
+            You have submitted <strong>{{ requests|length }}</strong>
+            build request{{ 's' if requests|length != 1 else '' }} so far.
+        {% else %}
+            You haven't requested any builds yet.
+        {% endif %}
+    </p>
+</div>
+
+{% if requests %}
+<div class="history-list">
+    {% for r in requests %}
+    <div class="history-card">
+        <div class="history-header">
+            <div class="history-meta">
+                <h3>
+                    <span class="purpose-pill">{{ r.purpose }}</span>
+                    Request #{{ r.request_id }}
+                </h3>
+                <div class="history-info">
+                    <span>📅 {{ r.request_date }}</span>
+                    <span>💵
+                        {% if r.currency == 'PKR' %}
+                            ₨{{ "{:,.0f}".format(r.budget * usd_to_pkr) }} PKR
+                        {% else %}
+                            ${{ "%.2f"|format(r.budget) }} USD
+                        {% endif %}
+                    </span>
+                    <span>🛠 {{ r.builds|length }} build{{ 's' if r.builds|length != 1 else '' }}</span>
+                </div>
+            </div>
+            <a href="{{ url_for('build_result', request_id=r.request_id) }}"
+               class="btn-view">View Full Build</a>
+        </div>
+
+        {% if r.builds %}
+        <div class="history-builds">
+            {% for build in r.builds %}
+            <div class="history-build-summary">
+                <div class="history-build-header">
+                    <strong>Build #{{ loop.index }}</strong>
+                    <span class="history-total">
+                        {% if r.currency == 'PKR' %}
+                            ₨{{ "{:,.0f}".format(build.total_cost * usd_to_pkr) }}
+                        {% else %}
+                            ${{ "%.2f"|format(build.total_cost) }}
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="history-parts">
+                    {% for part in build.parts %}
+                    <span class="part-chip" title="{{ part.brand }} · {% if r.currency == 'PKR' %}₨{{ '{:,.0f}'.format(part.price * part.quantity * usd_to_pkr) }}{% else %}${{ '%.2f'|format(part.price * part.quantity) }}{% endif %}">
+                        <strong>{{ part.component_type }}:</strong> {{ part.component_name }}
+                    </span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="history-empty">No builds generated for this request.</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">📋</div>
+    <h2>No Build History Yet</h2>
+    <p>Submit your first build request to get started.</p>
+    <a href="{{ url_for('build_request') }}" class="btn-primary"
+       style="display: inline-block; width: auto; padding: 0.9rem 2rem;
+              text-decoration: none; margin-top: 1rem;">
+        Request a Build
+    </a>
+</div>
+{% endif %}
+{% endblock %}

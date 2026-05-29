@@ -1,0 +1,133 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard Overview{% endblock %}
+
+{% block content %}
+
+<div class="row g-3 mb-4">
+  <div class="col-md-6 col-xl-3">
+    <div class="stat-card">
+      <div class="stat-icon icon-blue"><i class="bi bi-people-fill"></i></div>
+      <p class="stat-value">{{ stats.total_users }}</p>
+      <p class="stat-label">Registered Users</p>
+    </div>
+  </div>
+  <div class="col-md-6 col-xl-3">
+    <div class="stat-card">
+      <div class="stat-icon icon-green"><i class="bi bi-cpu-fill"></i></div>
+      <p class="stat-value">{{ stats.total_components }}</p>
+      <p class="stat-label">Active Components</p>
+    </div>
+  </div>
+  <div class="col-md-6 col-xl-3">
+    <div class="stat-card">
+      <div class="stat-icon icon-purple"><i class="bi bi-file-earmark-text-fill"></i></div>
+      <p class="stat-value">{{ stats.total_requests }}</p>
+      <p class="stat-label">Build Requests</p>
+    </div>
+  </div>
+  <div class="col-md-6 col-xl-3">
+    <div class="stat-card">
+      <div class="stat-icon icon-orange"><i class="bi bi-pc-display-horizontal"></i></div>
+      <p class="stat-value">{{ stats.total_builds }}</p>
+      <p class="stat-label">Recommended Builds</p>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="stat-icon icon-pink"><i class="bi bi-cash-coin"></i></div>
+      <p class="stat-value">${{ "%.2f"|format(stats.avg_budget) }}</p>
+      <p class="stat-label">Average Budget (USD)</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="stat-icon icon-cyan"><i class="bi bi-calendar-month"></i></div>
+      <p class="stat-value">{{ stats.requests_this_month }}</p>
+      <p class="stat-label">Requests This Month</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="stat-icon icon-blue"><i class="bi bi-graph-up-arrow"></i></div>
+      <p class="stat-value">${{ "{:,.0f}".format(stats.total_value) }}</p>
+      <p class="stat-label">Total System Throughput</p>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-8">
+    <div class="panel">
+      <div class="panel-header">
+        <h5><i class="bi bi-clock-history me-2"></i>Recent Build Requests</h5>
+        <a href="{{ url_for('logs') }}" class="btn btn-sm btn-outline-primary">View All</a>
+      </div>
+      <div class="panel-body">
+        {% if recent %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th><th>User</th><th>Purpose</th><th>Budget</th><th>Date</th><th>Builds</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in recent %}
+            <tr>
+              <td><strong>#{{ r.request_id }}</strong></td>
+              <td>{{ r.full_name }}</td>
+              <td><span class="badge-purpose">{{ r.purpose }}</span></td>
+              <td>${{ "%.2f"|format(r.budget) }}</td>
+              <td class="text-muted small">{{ r.request_date }}</td>
+              <td><span class="badge bg-success">{{ r.build_count }}</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="text-center text-muted py-5">
+          <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+          <p class="mt-2 mb-0">No build requests yet.</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="panel">
+      <div class="panel-header">
+        <h5><i class="bi bi-trophy me-2"></i>Top Components</h5>
+      </div>
+      <div class="panel-body">
+        {% if top_components %}
+        <table class="table">
+          <tbody>
+            {% for c in top_components %}
+            <tr>
+              <td>
+                <div style="font-weight:500; color:#0f172a;">{{ c.component_name }}</div>
+                <div class="small text-muted">{{ c.brand }} · {{ c.component_type }}</div>
+              </td>
+              <td class="text-end">
+                <span class="badge bg-primary">{{ c.times_used }}×</span>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="text-center text-muted py-5">
+          <p class="mb-0">No data yet.</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

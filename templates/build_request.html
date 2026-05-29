@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}New Build Request — PC Build Recommender{% endblock %}
+
+{% block content %}
+<div class="auth-card" style="max-width: 600px;">
+    <h2>Request a New Build</h2>
+    <p class="auth-subtitle">Tell us your budget, purpose, and what kind of build you want</p>
+
+    <form method="POST" action="{{ url_for('build_request') }}">
+        <div class="form-group">
+            <label for="currency">Currency</label>
+            <select id="currency" name="currency" required>
+                <option value="USD">🇺🇸 USD — US Dollar</option>
+                <option value="PKR">🇵🇰 PKR — Pakistani Rupee</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="budget">Budget</label>
+            <input type="number" id="budget" name="budget"
+                   placeholder="e.g. 1500" min="1" step="1" required>
+            <small style="color: #64748b; font-size: 0.85rem; display: block; margin-top: 0.3rem;">
+                Enter the amount in the currency selected above.
+            </small>
+        </div>
+
+        <div class="form-group">
+            <label for="purpose">Intended Purpose</label>
+            <select id="purpose" name="purpose" required>
+                <option value="">-- Select a purpose --</option>
+                <option value="Gaming and Streaming">🎮 Gaming and Streaming</option>
+                <option value="Video Editing">🎬 Video Editing</option>
+                <option value="3D Rendering">🎨 3D Rendering</option>
+                <option value="AI & Model Training">🤖 AI & Model Training</option>
+               
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Build Preference</label>
+            <div class="preference-options">
+
+                <label class="preference-card" for="pref-max">
+                    <input type="radio" id="pref-max" name="build_preference" value="Maximum Performance">
+                    <div class="preference-content">
+                        <div class="preference-icon">🚀</div>
+                        <div>
+                            <div class="preference-title">Maximum Performance</div>
+                            <div class="preference-desc">Top-tier parts, uses most of your budget</div>
+                        </div>
+                    </div>
+                </label>
+
+                <label class="preference-card selected" for="pref-bal">
+                    <input type="radio" id="pref-bal" name="build_preference" value="Balanced" checked>
+                    <div class="preference-content">
+                        <span class="preference-badge">⭐ Recommended</span>
+                        <div class="preference-icon">⚖️</div>
+                        <div>
+                            <div class="preference-title">Balanced Build</div>
+                            <div class="preference-desc">Best CPU/GPU balance, reasonable savings</div>
+                        </div>
+                    </div>
+                </label>
+
+                <label class="preference-card" for="pref-budget">
+                    <input type="radio" id="pref-budget" name="build_preference" value="Budget Saver">
+                    <div class="preference-content">
+                        <div class="preference-icon">💰</div>
+                        <div>
+                            <div class="preference-title">Budget Saver</div>
+                            <div class="preference-desc">Best value picks, keeps savings</div>
+                        </div>
+                    </div>
+                </label>
+
+            </div>
+        </div>
+
+        <button type="submit" class="btn-primary">Get My Build</button>
+    </form>
+</div>
+
+<script>
+    // Handle preference card selection — adds/removes "selected" class
+    document.addEventListener("DOMContentLoaded", function() {
+        const cards = document.querySelectorAll(".preference-card");
+        const radios = document.querySelectorAll('input[name="build_preference"]');
+
+        radios.forEach(function(radio) {
+            radio.addEventListener("change", function() {
+                cards.forEach(function(card) {
+                    card.classList.remove("selected");
+                });
+                if (radio.checked) {
+                    radio.closest(".preference-card").classList.add("selected");
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

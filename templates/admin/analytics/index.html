@@ -1,0 +1,402 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Analytics{% endblock %}
+{% block page_title %}Analytics &amp; Insights{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<!-- Headline stat cards -->
+<div class="row g-3 mb-4">
+  <div class="col-md-6 col-xl-3">
+    <div class="stat-card">
+      <div class="stat-icon icon-purple"><i class="bi bi-file-earmark-text-fill"></i></div>
+      <p class="stat-value">{{ total_requests }}</p>
+      <p class="stat-label">Total Requests</p>
+    </div>
+  </div>
+  <div class="col-md-6 col-xl-3">
+    <div class="stat-card">
+      <div class="stat-icon icon-orange"><i class="bi bi-pc-display-horizontal"></i></div>
+      <p class="stat-value">{{ total_builds }}</p>
+      <p class="stat-label">Builds Generated</p>
+    </div>
+  </div>
+  <div class="col-md-6 col-xl-3">
+    <div class="stat-card">
+      <div class="stat-icon icon-blue"><i class="bi bi-arrow-repeat"></i></div>
+      <p class="stat-value">{{ "%.2f"|format(avg_builds_per_request) }}</p>
+      <p class="stat-label">Avg. Builds / Request</p>
+    </div>
+  </div>
+  <div class="col-md-6 col-xl-3">
+    <div class="stat-card">
+      <div class="stat-icon icon-green"><i class="bi bi-cash-stack"></i></div>
+      <p class="stat-value">${{ "%.0f"|format(cost_stats.avg_cost) }}</p>
+      <p class="stat-label">Avg. Build Cost</p>
+    </div>
+  </div>
+</div>
+
+<!-- Cost stats panel -->
+<div class="panel mb-4">
+  <div class="panel-header">
+    <h5><i class="bi bi-graph-up me-2"></i>Build Cost Statistics</h5>
+  </div>
+  <div class="panel-body" style="padding: 22px;">
+    <div class="row g-3 text-center">
+      <div class="col-md-3">
+        <div class="text-muted small text-uppercase mb-1">Minimum</div>
+        <div style="font-size: 1.3rem; font-weight: 600; color: #16a34a;">
+          ${{ "%.2f"|format(cost_stats.min_cost) }}
+        </div>
+        <div class="small text-muted">₨{{ "{:,.0f}".format(cost_stats.min_cost * usd_to_pkr) }}</div>
+      </div>
+      <div class="col-md-3">
+        <div class="text-muted small text-uppercase mb-1">Average</div>
+        <div style="font-size: 1.3rem; font-weight: 600; color: #2563eb;">
+          ${{ "%.2f"|format(cost_stats.avg_cost) }}
+        </div>
+        <div class="small text-muted">₨{{ "{:,.0f}".format(cost_stats.avg_cost * usd_to_pkr) }}</div>
+      </div>
+      <div class="col-md-3">
+        <div class="text-muted small text-uppercase mb-1">Maximum</div>
+        <div style="font-size: 1.3rem; font-weight: 600; color: #dc2626;">
+          ${{ "%.2f"|format(cost_stats.max_cost) }}
+        </div>
+        <div class="small text-muted">₨{{ "{:,.0f}".format(cost_stats.max_cost * usd_to_pkr) }}</div>
+      </div>
+      <div class="col-md-3">
+        <div class="text-muted small text-uppercase mb-1">Total Throughput</div>
+        <div style="font-size: 1.3rem; font-weight: 600; color: #7c3aed;">
+          ${{ "{:,.0f}".format(cost_stats.sum_cost) }}
+        </div>
+        <div class="small text-muted">₨{{ "{:,.0f}".format(cost_stats.sum_cost * usd_to_pkr) }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Charts row 1 -->
+<div class="row g-3 mb-4">
+  <div class="col-lg-7">
+    <div class="panel h-100">
+      <div class="panel-header">
+        <h5><i class="bi bi-calendar-month me-2"></i>Requests Over the Last 12 Months</h5>
+      </div>
+      <div class="panel-body" style="padding: 18px 22px;">
+        <canvas id="chart-monthly" height="120"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="panel h-100">
+      <div class="panel-header">
+        <h5><i class="bi bi-pie-chart-fill me-2"></i>Requests by Purpose</h5>
+      </div>
+      <div class="panel-body" style="padding: 18px 22px;">
+        {% if by_purpose %}
+          <canvas id="chart-purpose" height="170"></canvas>
+        {% else %}
+          <div class="text-center text-muted py-5">No data yet.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Charts row 2 -->
+<div class="row g-3 mb-4">
+  <div class="col-lg-6">
+    <div class="panel h-100">
+      <div class="panel-header">
+        <h5><i class="bi bi-bar-chart-fill me-2"></i>Budget Distribution</h5>
+      </div>
+      <div class="panel-body" style="padding: 18px 22px;">
+        <canvas id="chart-budget" height="180"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="panel h-100">
+      <div class="panel-header">
+        <h5><i class="bi bi-tags-fill me-2"></i>Top Brands by Build Appearances</h5>
+      </div>
+      <div class="panel-body" style="padding: 18px 22px;">
+        {% if by_brand %}
+          <canvas id="chart-brand" height="180"></canvas>
+        {% else %}
+          <div class="text-center text-muted py-5">No data yet.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if has_preference and by_preference %}
+<div class="panel mb-4">
+  <div class="panel-header">
+    <h5><i class="bi bi-sliders me-2"></i>Build Preference Distribution</h5>
+  </div>
+  <div class="panel-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Preference</th>
+          <th class="text-end">Requests</th>
+          <th>Share</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set total_pref = by_preference|sum(attribute='cnt') %}
+        {% for p in by_preference %}
+        <tr>
+          <td>
+            {% if p.pref == 'Maximum Performance' %}
+              <span class="badge bg-danger-subtle text-danger">{{ p.pref }}</span>
+            {% elif p.pref == 'Budget Saver' %}
+              <span class="badge bg-success-subtle text-success">{{ p.pref }}</span>
+            {% else %}
+              <span class="badge bg-primary-subtle text-primary">{{ p.pref }}</span>
+            {% endif %}
+          </td>
+          <td class="text-end"><strong>{{ p.cnt }}</strong></td>
+          <td style="width: 50%;">
+            {% set pct = (p.cnt / total_pref * 100) if total_pref else 0 %}
+            <div class="d-flex align-items-center gap-2">
+              <div class="progress flex-grow-1" style="height: 8px;">
+                <div class="progress-bar bg-primary" style="width: {{ pct }}%;"></div>
+              </div>
+              <span class="small text-muted" style="min-width: 50px;">{{ "%.1f"|format(pct) }}%</span>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+<!-- Top components & top per category -->
+<div class="row g-3 mb-4">
+  <div class="col-lg-6">
+    <div class="panel h-100">
+      <div class="panel-header">
+        <h5><i class="bi bi-trophy-fill me-2"></i>Top 10 Recommended Components</h5>
+      </div>
+      <div class="panel-body">
+        {% if top_components %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th><th>Component</th><th>Type</th><th class="text-end">Uses</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in top_components %}
+            <tr>
+              <td><strong>{{ loop.index }}</strong></td>
+              <td>
+                <div style="font-weight: 500; color: #0f172a;">{{ c.component_name }}</div>
+                <div class="small text-muted">{{ c.brand }} · ${{ "%.2f"|format(c.price) }}</div>
+              </td>
+              <td><span class="badge bg-secondary-subtle text-secondary">{{ c.component_type }}</span></td>
+              <td class="text-end"><span class="badge bg-primary">{{ c.times_used }}×</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+          <div class="text-center text-muted py-5">No data yet.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="panel h-100">
+      <div class="panel-header">
+        <h5><i class="bi bi-bookmark-star-fill me-2"></i>Top Pick per Category</h5>
+      </div>
+      <div class="panel-body">
+        {% if top_by_category %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Category</th><th>Most Recommended</th><th class="text-end">Uses</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in top_by_category %}
+            <tr>
+              <td><span class="badge bg-secondary-subtle text-secondary">{{ c.component_type }}</span></td>
+              <td>
+                <div style="font-weight: 500; color: #0f172a;">{{ c.component_name }}</div>
+                <div class="small text-muted">{{ c.brand }}</div>
+              </td>
+              <td class="text-end"><span class="badge bg-primary">{{ c.cnt }}×</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+          <div class="text-center text-muted py-5">No data yet.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Most active users -->
+<div class="panel">
+  <div class="panel-header">
+    <h5><i class="bi bi-people-fill me-2"></i>Most Active Users</h5>
+  </div>
+  <div class="panel-body">
+    {% if top_users %}
+    <table class="table">
+      <thead>
+        <tr><th>#</th><th>User</th><th>Email</th><th class="text-end">Requests</th></tr>
+      </thead>
+      <tbody>
+        {% for u in top_users %}
+        <tr>
+          <td><strong>{{ loop.index }}</strong></td>
+          <td>{{ u.full_name }}</td>
+          <td class="text-muted">{{ u.email }}</td>
+          <td class="text-end"><span class="badge bg-primary">{{ u.cnt }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <div class="text-center text-muted py-5">No data yet.</div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+  Chart.defaults.color = "#64748b";
+
+  const palette = [
+    "#2563eb", "#7c3aed", "#ea580c", "#16a34a", "#db2777",
+    "#0891b2", "#ca8a04", "#dc2626", "#9333ea", "#0d9488",
+  ];
+
+  // ---- Monthly line chart ----
+  (function() {
+    const data = {{ months_series|tojson }};
+    const ctx = document.getElementById("chart-monthly");
+    if (!ctx) return;
+    new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: data.map(d => d.ym),
+        datasets: [{
+          label: "Requests",
+          data: data.map(d => d.cnt),
+          borderColor: "#2563eb",
+          backgroundColor: "rgba(37, 99, 235, 0.1)",
+          tension: 0.35,
+          fill: true,
+          pointRadius: 4,
+          pointBackgroundColor: "#2563eb",
+        }],
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { precision: 0 } },
+        },
+      },
+    });
+  })();
+
+  // ---- Purpose doughnut ----
+  (function() {
+    const data = {{ by_purpose|tojson }};
+    const ctx = document.getElementById("chart-purpose");
+    if (!ctx || !data || !data.length) return;
+    new Chart(ctx, {
+      type: "doughnut",
+      data: {
+        labels: data.map(d => d.purpose),
+        datasets: [{
+          data: data.map(d => d.cnt),
+          backgroundColor: palette.slice(0, data.length),
+          borderWidth: 2,
+          borderColor: "#fff",
+        }],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: "bottom", labels: { padding: 12, boxWidth: 12 } },
+        },
+      },
+    });
+  })();
+
+  // ---- Budget buckets bar ----
+  (function() {
+    const data = {{ budget_buckets|tojson }};
+    const ctx = document.getElementById("chart-budget");
+    if (!ctx) return;
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: data.map(d => d.label),
+        datasets: [{
+          label: "Requests",
+          data: data.map(d => d.count),
+          backgroundColor: "#7c3aed",
+          borderRadius: 6,
+        }],
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { precision: 0 } },
+        },
+      },
+    });
+  })();
+
+  // ---- Brand horizontal bar ----
+  (function() {
+    const data = {{ by_brand|tojson }};
+    const ctx = document.getElementById("chart-brand");
+    if (!ctx || !data || !data.length) return;
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: data.map(d => d.brand),
+        datasets: [{
+          label: "Build appearances",
+          data: data.map(d => d.cnt),
+          backgroundColor: "#ea580c",
+          borderRadius: 6,
+        }],
+      },
+      options: {
+        responsive: true,
+        indexAxis: "y",
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { beginAtZero: true, ticks: { precision: 0 } },
+        },
+      },
+    });
+  })();
+</script>
+{% endblock %}

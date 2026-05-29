@@ -1,0 +1,165 @@
+component_id,component_name,component_type,brand,price,specifications,compatibility_info
+1,Ryzen 3 4100,CPU,AMD,67.79,"4 cores / 8 threads, 3.8–4.0 GHz, AM4",Socket AM4; DDR4 supported
+2,Ryzen 5 2600,CPU,AMD,65.63,"6 cores / 12 threads, 3.4–3.9 GHz, AM4",Socket AM4; DDR4 supported
+3,Ryzen 5 4500,CPU,AMD,76.88,"6 cores / 12 threads, 3.6–4.1 GHz, AM4",Socket AM4; DDR4 supported
+4,Ryzen 5 5500,CPU,AMD,86.7,"6 cores / 12 threads, 3.6–4.2 GHz, AM4",Socket AM4; DDR4 supported
+5,Ryzen 5 5600,CPU,AMD,149.46,"6 cores / 12 threads, 3.5–4.4 GHz, AM4",Socket AM4; DDR4 supported
+6,Ryzen 5 5600X,CPU,AMD,167.07,"6 cores / 12 threads, 3.7–4.6 GHz, AM4",Socket AM4; DDR4 supported
+7,Ryzen 5 7500F,CPU,AMD,205.69,"6 cores / 12 threads, 3.7–5.0 GHz, AM5",Socket AM5; DDR5 only
+8,Ryzen 5 7600,CPU,AMD,203.48,"6 cores / 12 threads, 3.8–5.1 GHz, AM5",Socket AM5; DDR5 only
+9,Ryzen 5 7600X,CPU,AMD,241.1,"6 cores / 12 threads, 4.7–5.3 GHz, AM5",Socket AM5; DDR5 only
+10,Ryzen 7 5700X,CPU,AMD,171.49,"8 cores / 16 threads, 3.4–4.6 GHz, AM4",Socket AM4; DDR4 supported
+11,Ryzen 7 5800X,CPU,AMD,240.93,"8 cores / 16 threads, 3.8–4.7 GHz, AM4",Socket AM4; DDR4 supported
+12,Ryzen 7 5800X3D,CPU,AMD,310.32,"8 cores / 16 threads, 3.4–4.5 GHz, 96MB cache, AM4",Socket AM4; DDR4 supported
+13,Ryzen 7 7700,CPU,AMD,271.59,"8 cores / 16 threads, 3.8–5.3 GHz, AM5",Socket AM5; DDR5 only
+14,Ryzen 7 7700X,CPU,AMD,311.93,"8 cores / 16 threads, 4.5–5.4 GHz, AM5",Socket AM5; DDR5 only
+15,Ryzen 7 7800X3D,CPU,AMD,431.99,"8 cores / 16 threads, 4.2–5.0 GHz, 96MB cache, AM5",Socket AM5; DDR5 only
+16,Ryzen 9 7900,CPU,AMD,418.15,"12 cores / 24 threads, 3.7–5.4 GHz, AM5",Socket AM5; DDR5 only
+17,Ryzen 9 7900X,CPU,AMD,437.64,"12 cores / 24 threads, 4.7–5.6 GHz, AM5",Socket AM5; DDR5 only
+18,Ryzen 9 7950X,CPU,AMD,613.03,"16 cores / 32 threads, 4.5–5.7 GHz, AM5",Socket AM5; DDR5 only
+19,Ryzen 9 7950X3D,CPU,AMD,700.94,"16 cores / 32 threads, 4.2–5.7 GHz, 128MB cache, AM5",Socket AM5; DDR5 only
+20,Ryzen 9 9950X,CPU,AMD,600.78,"16 cores / 32 threads, 4.3–5.7 GHz, AM5",Socket AM5; DDR5 only
+21,Ryzen 9 9950X3D,CPU,AMD,820.87,"16 cores / 32 threads, 4.3–5.7 GHz, 128MB cache, AM5",Socket AM5; DDR5 only
+22,Threadripper 7960X,CPU,AMD,1609.44,"24 cores / 48 threads, 4.2–5.3 GHz, sTR5",Socket sTR5; DDR5 ECC
+23,Threadripper 7980X,CPU,AMD,4738.18,"64 cores / 128 threads, 3.2–5.1 GHz, sTR5",Socket sTR5; DDR5 ECC
+24,Core i3-12100F,CPU,Intel,90.44,"4 cores / 8 threads, 3.3–4.3 GHz, LGA1700",Socket LGA1700; DDR4/DDR5
+25,Core i3-13100F,CPU,Intel,128.5,"4 cores / 8 threads, 3.4–4.5 GHz, LGA1700",Socket LGA1700; DDR4/DDR5
+26,Core i5-12400F,CPU,Intel,143.46,"6 cores / 12 threads, 2.5–4.4 GHz, LGA1700",Socket LGA1700; DDR4/DDR5
+27,Core i5-13400F,CPU,Intel,173.71,"10 cores / 16 threads, 2.5–4.6 GHz, LGA1700",Socket LGA1700; DDR4/DDR5
+28,Core i5-13600K,CPU,Intel,264.84,"14 cores / 20 threads, 3.5–5.1 GHz, LGA1700",Socket LGA1700; DDR4/DDR5
+29,Core i5-14600K,CPU,Intel,332.37,"14 cores / 20 threads, 3.5–5.3 GHz, LGA1700",Socket LGA1700; DDR4/DDR5
+30,Core i7-13700K,CPU,Intel,406.22,"16 cores / 24 threads, 3.4–5.4 GHz, LGA1700",Socket LGA1700; DDR4/DDR5
+31,Core i7-14700K,CPU,Intel,438.43,"20 cores / 28 threads, 3.4–5.6 GHz, LGA1700",Socket LGA1700; DDR4/DDR5
+32,Core i9-13900K,CPU,Intel,612.97,"24 cores / 32 threads, 3.0–5.8 GHz, LGA1700",Socket LGA1700; DDR4/DDR5
+33,Core i9-14900K,CPU,Intel,624.35,"24 cores / 32 threads, 3.2–6.0 GHz, LGA1700",Socket LGA1700; DDR4/DDR5
+34,Core i9-14900KS,CPU,Intel,816.77,"24 cores / 32 threads, 3.2–6.2 GHz, LGA1700",Socket LGA1700; DDR4/DDR5
+35,Xeon w7-3465X,CPU,Intel,3027.12,"28 cores / 56 threads, 2.5–4.8 GHz, LGA4677",Socket LGA4677; DDR5 ECC
+36,GeForce GT 1030 2GB,GPU,NVIDIA,88.8,"2GB GDDR5, 384 CUDA cores",PCIe 3.0 x4; no external power
+37,GeForce GTX 1650 4GB,GPU,NVIDIA,173.18,"4GB GDDR6, 896 CUDA cores",PCIe 3.0 x16; no external power
+38,Radeon RX 6400,GPU,AMD,154.74,"4GB GDDR6, 768 stream processors",PCIe 4.0 x4; no external power
+39,Radeon RX 6500 XT,GPU,AMD,193.09,"4GB GDDR6, 1024 stream processors",PCIe 4.0 x4; 1x 6-pin power
+40,GeForce GTX 1660 Super,GPU,NVIDIA,208.87,"6GB GDDR6, 1408 CUDA cores",PCIe 3.0 x16; 1x 8-pin power
+41,Radeon RX 6600,GPU,AMD,222.27,"8GB GDDR6, 1792 stream processors",PCIe 4.0 x8; 1x 8-pin power
+42,Radeon RX 6600 XT,GPU,AMD,232.29,"8GB GDDR6, 2048 stream processors",PCIe 4.0 x8; 1x 8-pin power
+43,GeForce RTX 3050 8GB,GPU,NVIDIA,213.67,"8GB GDDR6, 2560 CUDA cores",PCIe 4.0 x8; 1x 8-pin power
+44,GeForce RTX 3060 12GB,GPU,NVIDIA,280.26,"12GB GDDR6, 3584 CUDA cores",PCIe 4.0 x16; 1x 8-pin power
+45,Radeon RX 7600,GPU,AMD,244.79,"8GB GDDR6, 2048 stream processors",PCIe 4.0 x8; 1x 8-pin power
+46,GeForce RTX 4060 8GB,GPU,NVIDIA,293.97,"8GB GDDR6, 3072 CUDA cores",PCIe 4.0 x8; 1x 8-pin power
+47,Radeon RX 6700 XT,GPU,AMD,318.08,"12GB GDDR6, 2560 stream processors",PCIe 4.0 x16; 2x 8-pin power
+48,GeForce RTX 3070,GPU,NVIDIA,365.02,"8GB GDDR6, 5888 CUDA cores",PCIe 4.0 x16; 1x 8-pin power
+49,GeForce RTX 4060 Ti 8GB,GPU,NVIDIA,420.85,"8GB GDDR6, 4352 CUDA cores",PCIe 4.0 x8; 1x 16-pin power
+50,Radeon RX 7700 XT,GPU,AMD,432.83,"12GB GDDR6, 3456 stream processors",PCIe 4.0 x16; 2x 8-pin power
+51,Radeon RX 7800 XT,GPU,AMD,513.32,"16GB GDDR6, 3840 stream processors",PCIe 4.0 x16; 2x 8-pin power
+52,GeForce RTX 4070,GPU,NVIDIA,540.95,"12GB GDDR6X, 5888 CUDA cores",PCIe 4.0 x16; 1x 16-pin power
+53,GeForce RTX 4070 Super,GPU,NVIDIA,616.7,"12GB GDDR6X, 7168 CUDA cores",PCIe 4.0 x16; 1x 16-pin power
+54,GeForce RTX 4070 Ti,GPU,NVIDIA,823.03,"12GB GDDR6X, 7680 CUDA cores",PCIe 4.0 x16; 1x 16-pin power
+55,GeForce RTX 4070 Ti Super,GPU,NVIDIA,857.76,"16GB GDDR6X, 8448 CUDA cores",PCIe 4.0 x16; 1x 16-pin power
+56,Radeon RX 7900 XT,GPU,AMD,773.1,"20GB GDDR6, 5376 stream processors",PCIe 4.0 x16; 2x 8-pin power
+57,Radeon RX 7900 XTX,GPU,AMD,909.09,"24GB GDDR6, 6144 stream processors",PCIe 4.0 x16; 2x 8-pin power
+58,GeForce RTX 4080,GPU,NVIDIA,1059.37,"16GB GDDR6X, 9728 CUDA cores",PCIe 4.0 x16; 1x 16-pin power
+59,GeForce RTX 4080 Super,GPU,NVIDIA,1029.41,"16GB GDDR6X, 10240 CUDA cores",PCIe 4.0 x16; 1x 16-pin power
+60,GeForce RTX 4090,GPU,NVIDIA,1713.84,"24GB GDDR6X, 16384 CUDA cores",PCIe 4.0 x16; 1x 16-pin power
+61,GeForce RTX 4090 Ti,GPU,NVIDIA,2295.81,"24GB GDDR6X, 18176 CUDA cores",PCIe 4.0 x16; 1x 16-pin power
+62,GeForce RTX 5090,GPU,NVIDIA,2320.0,"32GB GDDR7, 21760 CUDA cores",PCIe 5.0 x16; 1x 16-pin power
+63,RTX A6000,GPU,NVIDIA,4645.56,"48GB GDDR6 ECC, 10752 CUDA cores",PCIe 4.0 x16; 1x 8-pin power
+64,RTX 6000 Ada,GPU,NVIDIA,7184.61,"48GB GDDR6 ECC, 18176 CUDA cores",PCIe 4.0 x16; 1x 16-pin power
+65,Vengeance LPX 8GB DDR4 3200,RAM,Corsair,26.43,1x8GB DDR4-3200 CL16,DDR4; AM4/LGA1200/LGA1700 boards
+66,Fury 8GB DDR4 3200,RAM,Kingston,23.76,1x8GB DDR4-3200 CL16,DDR4 boards
+67,Ripjaws V 16GB DDR4 3200,RAM,G.Skill,36.12,2x8GB DDR4-3200 CL16,DDR4 boards
+68,Vengeance LPX 16GB DDR4 3200,RAM,Corsair,35.64,2x8GB DDR4-3200 CL16,DDR4; AM4/LGA1200/LGA1700 boards
+69,Fury 16GB DDR4 3600,RAM,Kingston,44.31,2x8GB DDR4-3600 CL18,DDR4 boards
+70,Vengeance 32GB DDR4 3600,RAM,Corsair,76.69,2x16GB DDR4-3600 CL18,DDR4; AM4/LGA1200/LGA1700 boards
+71,Trident Z RGB 32GB DDR4 3600,RAM,G.Skill,81.33,2x16GB DDR4-3600 CL16,DDR4 boards
+72,Vengeance 64GB DDR4 3200,RAM,Corsair,172.43,2x32GB DDR4-3200 CL16,DDR4 boards
+73,Fury Beast 16GB DDR5 5200,RAM,Kingston,72.53,2x8GB DDR5-5200 CL40,DDR5; AM5/LGA1700 (DDR5) boards
+74,Vengeance 16GB DDR5 5600,RAM,Corsair,67.87,2x8GB DDR5-5600 CL36,DDR5 boards
+75,Crucial Pro 32GB DDR5 5600,RAM,Crucial,101.39,2x16GB DDR5-5600 CL46,DDR5; AM5/LGA1700 (DDR5) boards
+76,Fury Beast 32GB DDR5 5600,RAM,Kingston,101.87,2x16GB DDR5-5600 CL36,DDR5; AM5/LGA1700 (DDR5) boards
+77,Vengeance 32GB DDR5 6000,RAM,Corsair,136.58,2x16GB DDR5-6000 CL30,DDR5; AM5/LGA1700 (DDR5) boards
+78,Trident Z5 32GB DDR5 6400,RAM,G.Skill,133.35,2x16GB DDR5-6400 CL32,DDR5; AM5/LGA1700 (DDR5) boards
+79,Trident Z5 RGB 32GB DDR5 7200,RAM,G.Skill,153.24,2x16GB DDR5-7200 CL34,DDR5; AM5/LGA1700 (DDR5) boards
+80,Vengeance 64GB DDR5 5600,RAM,Corsair,194.8,2x32GB DDR5-5600 CL40,DDR5; AM5/LGA1700 (DDR5) boards
+81,Trident Z5 64GB DDR5 6000,RAM,G.Skill,249.3,2x32GB DDR5-6000 CL30,DDR5; AM5/LGA1700 (DDR5) boards
+82,Vengeance 96GB DDR5 6400,RAM,Corsair,376.27,2x48GB DDR5-6400 CL32,DDR5; AM5/LGA1700 (DDR5) boards
+83,Pro RDIMM 128GB DDR5 5600,RAM,Kingston,653.53,4x32GB DDR5-5600 ECC RDIMM,DDR5 ECC; workstation boards (sTR5/LGA4677)
+84,A520M-A Pro,Motherboard,MSI,87.45,"mATX, AM4, DDR4, PCIe 3.0",Socket AM4; DDR4 only
+85,B450M Steel Legend,Motherboard,ASRock,84.99,"mATX, AM4, DDR4, PCIe 3.0",Socket AM4; DDR4 only
+86,B550M-A WiFi,Motherboard,ASUS,116.58,"mATX, AM4, DDR4, PCIe 4.0",Socket AM4; DDR4 only
+87,B550 Tomahawk,Motherboard,MSI,169.9,"ATX, AM4, DDR4, PCIe 4.0",Socket AM4; DDR4 only
+88,TUF Gaming B550-Plus,Motherboard,ASUS,162.83,"ATX, AM4, DDR4, PCIe 4.0",Socket AM4; DDR4 only
+89,X570 Aorus Elite,Motherboard,Gigabyte,184.55,"ATX, AM4, DDR4, PCIe 4.0",Socket AM4; DDR4 only
+90,B760M Pro RS,Motherboard,ASRock,131.88,"mATX, LGA1700, DDR4, PCIe 4.0",Socket LGA1700; DDR4
+91,B760 Tomahawk WiFi,Motherboard,MSI,174.93,"ATX, LGA1700, DDR4, PCIe 4.0",Socket LGA1700; DDR4
+92,B650M-A WiFi,Motherboard,ASUS,201.37,"mATX, AM5, DDR5, PCIe 4.0",Socket AM5; DDR5 only
+93,B650 Tomahawk WiFi,Motherboard,MSI,249.6,"ATX, AM5, DDR5, PCIe 4.0",Socket AM5; DDR5 only
+94,ROG Strix B650-A,Motherboard,ASUS,275.33,"ATX, AM5, DDR5, PCIe 5.0",Socket AM5; DDR5 only
+95,X670E Tomahawk,Motherboard,MSI,334.45,"ATX, AM5, DDR5, PCIe 5.0",Socket AM5; DDR5 only
+96,ROG Crosshair X670E Hero,Motherboard,ASUS,633.43,"ATX, AM5, DDR5, PCIe 5.0",Socket AM5; DDR5 only
+97,X870E Aorus Master,Motherboard,Gigabyte,579.61,"ATX, AM5, DDR5, PCIe 5.0",Socket AM5; DDR5 only
+98,Z690 Aorus Elite AX,Motherboard,Gigabyte,251.75,"ATX, LGA1700, DDR5, PCIe 5.0",Socket LGA1700; DDR5
+99,Z790 Aorus Elite,Motherboard,Gigabyte,328.26,"ATX, LGA1700, DDR5, PCIe 5.0",Socket LGA1700; DDR5
+100,ROG Maximus Z790 Hero,Motherboard,ASUS,700.51,"ATX, LGA1700, DDR5, PCIe 5.0",Socket LGA1700; DDR5
+101,TRX50 AERO D,Motherboard,Gigabyte,852.3,"EATX, sTR5, DDR5 ECC, PCIe 5.0",Socket sTR5; DDR5 ECC
+102,Pro WS W790-ACE,Motherboard,ASUS,1038.56,"EATX, LGA4677, DDR5 ECC, PCIe 5.0",Socket LGA4677; DDR5 ECC
+103,WD Blue 1TB HDD,Storage,WD,40.23,"1TB, 7200RPM, SATA III","Any 3.5"" SATA bay"
+104,Seagate Barracuda 2TB HDD,Storage,Seagate,63.42,"2TB, 7200RPM, SATA III","Any 3.5"" SATA bay"
+105,WD Blue 4TB HDD,Storage,WD,88.0,"4TB, 5400RPM, SATA III","Any 3.5"" SATA bay"
+106,Seagate Ironwolf 8TB HDD,Storage,Seagate,212.05,"8TB, 7200RPM, SATA III, NAS-rated","Any 3.5"" SATA bay"
+107,Kingston A400 240GB SATA SSD,Storage,Kingston,23.45,"240GB, SATA III, 500MB/s read","Any 2.5"" SATA bay"
+108,Kingston A400 480GB SATA SSD,Storage,Kingston,36.52,"480GB, SATA III, 500MB/s read","Any 2.5"" SATA bay"
+109,Crucial BX500 500GB SATA SSD,Storage,Crucial,41.81,"500GB, SATA III, 540MB/s read","Any 2.5"" SATA bay"
+110,Crucial MX500 1TB SATA SSD,Storage,Crucial,83.85,"1TB, SATA III, 560MB/s read","Any 2.5"" SATA bay"
+111,Samsung 870 EVO 1TB SATA SSD,Storage,Samsung,96.9,"1TB, SATA III, 560MB/s read","Any 2.5"" SATA bay"
+112,Samsung 870 EVO 2TB SATA SSD,Storage,Samsung,140.54,"2TB, SATA III, 560MB/s read","Any 2.5"" SATA bay"
+113,Kingston NV2 500GB NVMe,Storage,Kingston,42.51,"500GB, PCIe 3.0 x4, 3500MB/s read",M.2 2280 PCIe 3.0 slot
+114,WD Blue SN570 1TB NVMe,Storage,WD,64.47,"1TB, PCIe 3.0 x4, 3500MB/s read",M.2 2280 PCIe 3.0 slot
+115,Samsung 980 1TB NVMe,Storage,Samsung,92.82,"1TB, PCIe 3.0 x4, 3500MB/s read",M.2 2280 PCIe 3.0 slot
+116,Crucial P3 2TB NVMe,Storage,Crucial,125.47,"2TB, PCIe 3.0 x4, 3500MB/s read",M.2 2280 PCIe 3.0 slot
+117,WD Black SN770 1TB NVMe,Storage,WD,82.46,"1TB, PCIe 4.0 x4, 5150MB/s read",M.2 2280 PCIe 4.0 slot
+118,Samsung 980 Pro 1TB NVMe,Storage,Samsung,109.17,"1TB, PCIe 4.0 x4, 7000MB/s read",M.2 2280 PCIe 4.0 slot
+119,Samsung 980 Pro 2TB NVMe,Storage,Samsung,164.36,"2TB, PCIe 4.0 x4, 7000MB/s read",M.2 2280 PCIe 4.0 slot
+120,WD Black SN850X 2TB NVMe,Storage,WD,156.11,"2TB, PCIe 4.0 x4, 7300MB/s read",M.2 2280 PCIe 4.0 slot
+121,Samsung 990 Pro 2TB NVMe,Storage,Samsung,208.13,"2TB, PCIe 4.0 x4, 7450MB/s read",M.2 2280 PCIe 4.0 slot
+122,WD Black SN850X 4TB NVMe,Storage,WD,323.15,"4TB, PCIe 4.0 x4, 7300MB/s read",M.2 2280 PCIe 4.0 slot
+123,Samsung 990 Pro 4TB NVMe,Storage,Samsung,362.29,"4TB, PCIe 4.0 x4, 7450MB/s read",M.2 2280 PCIe 4.0 slot
+124,Crucial T700 2TB NVMe,Storage,Crucial,322.43,"2TB, PCIe 5.0 x4, 12400MB/s read",M.2 2280 PCIe 5.0 slot
+125,Samsung 990 EVO Plus 4TB NVMe,Storage,Samsung,320.05,"4TB, PCIe 5.0 x4, 14000MB/s read",M.2 2280 PCIe 5.0 slot
+126,CV450 450W 80+ Bronze,PSU,Corsair,39.86,"450W, 80+ Bronze, non-modular",Standard ATX
+127,MWE 550W 80+ White,PSU,Cooler Master,40.39,"550W, 80+ White, non-modular",Standard ATX
+128,CX550M 550W 80+ Bronze,PSU,Corsair,78.58,"550W, 80+ Bronze, semi-modular",Standard ATX
+129,MWE Gold 650W V2,PSU,Cooler Master,91.97,"650W, 80+ Gold, fully modular",Standard ATX
+130,TUF Gaming 650W Gold,PSU,ASUS,104.95,"650W, 80+ Gold, fully modular",Standard ATX
+131,RM750e 750W 80+ Gold,PSU,Corsair,110.76,"750W, 80+ Gold, fully modular",Standard ATX
+132,Focus GX-750,PSU,Seasonic,117.03,"750W, 80+ Gold, fully modular",Standard ATX
+133,RM850x 850W 80+ Gold,PSU,Corsair,165.73,"850W, 80+ Gold, fully modular",Standard ATX
+134,ToughPower GF1 850W,PSU,Thermaltake,157.88,"850W, 80+ Gold, fully modular",Standard ATX
+135,Prime TX-1000,PSU,Seasonic,225.14,"1000W, 80+ Titanium, fully modular",Standard ATX
+136,HX1200 1200W 80+ Platinum,PSU,Corsair,294.02,"1200W, 80+ Platinum, fully modular",Standard ATX
+137,Prime TX-1600,PSU,Seasonic,406.92,"1600W, 80+ Titanium, fully modular",Standard ATX (workstation/HEDT)
+138,Versa H17,Case,Thermaltake,60.21,mATX mini-tower,Fits mATX/ITX; 350mm GPU clearance
+139,MasterBox Q300L,Case,Cooler Master,70.32,mATX mini-tower mesh,Fits mATX/ITX; 360mm GPU clearance
+140,NR200P,Case,Cooler Master,93.85,"Mini-ITX, compact",Fits ITX only; 330mm GPU clearance
+141,4000D Airflow,Case,Corsair,96.88,"ATX mid-tower, 2x140mm included",Fits ATX/mATX/ITX; 360mm GPU clearance
+142,Lancool 216,Case,Lian Li,111.49,"ATX mid-tower, 2x160mm included",Fits ATX/mATX/ITX; 392mm GPU clearance
+143,H7 Flow,Case,NZXT,114.28,ATX mid-tower mesh,Fits ATX/mATX/ITX; 400mm GPU clearance
+144,Meshify 2 Compact,Case,Fractal,164.9,ATX mid-tower mesh,Fits ATX/mATX/ITX; 360mm GPU clearance
+145,5000D Airflow,Case,Corsair,191.16,"ATX mid-tower, 2x120mm included",Fits ATX/mATX/ITX; 400mm GPU clearance
+146,O11 Dynamic EVO,Case,Lian Li,190.59,"ATX mid-tower, dual-chamber",Fits ATX/mATX/ITX; 422mm GPU clearance
+147,Define 7 XL,Case,Fractal,262.36,E-ATX full-tower,Fits E-ATX/ATX/mATX/ITX; 480mm GPU clearance
+148,Enthoo Pro 2,Case,Phanteks,243.8,"E-ATX full-tower, server-rated",Fits E-ATX/ATX; workstation-friendly
+149,AMD Wraith Stealth,Cooler,AMD,2.01,"Stock air cooler, 54mm height",AM4 (bundled with some Ryzen CPUs)
+150,Intel Laminar RM1,Cooler,Intel,3.12,Stock air cooler,LGA1700 (bundled with non-K Intel CPUs)
+151,ID-COOLING SE-214-XT,Cooler,ID-COOLING,29.95,"Single-tower air cooler, 154mm",AM4/AM5/LGA1700/LGA1200
+152,Hyper H410R,Cooler,Cooler Master,28.5,"Compact air cooler, 136mm",AM4/AM5/LGA1700/LGA1200
+153,Hyper 212 Black,Cooler,Cooler Master,43.76,"Air cooler, 158mm height",AM4/AM5/LGA1700/LGA1200
+154,Peerless Assassin 120 SE,Cooler,Thermalright,42.76,"Dual-tower air cooler, 157mm",AM4/AM5/LGA1700/LGA1200
+155,Phantom Spirit 120,Cooler,Thermalright,41.82,"Dual-tower air cooler, 154mm",AM4/AM5/LGA1700/LGA1200
+156,Dark Rock 4,Cooler,be quiet!,79.49,"Air cooler, 159mm height",AM4/AM5/LGA1700/LGA1200
+157,Noctua NH-D15,Cooler,Noctua,110.14,"Dual-tower air cooler, 165mm",AM4/AM5/LGA1700/LGA1200
+158,Liquid Freezer III 240,Cooler,Arctic,107.65,240mm AIO liquid cooler,AM4/AM5/LGA1700/LGA1200
+159,iCUE H100i RGB Elite,Cooler,Corsair,129.2,240mm AIO liquid cooler,AM4/AM5/LGA1700/LGA1200
+160,Liquid Freezer II 280,Cooler,Arctic,118.81,280mm AIO liquid cooler,AM4/AM5/LGA1700/LGA1200
+161,Kraken X63 RGB,Cooler,NZXT,153.55,280mm AIO liquid cooler,AM4/AM5/LGA1700/LGA1200
+162,iCUE H150i Elite Capellix,Cooler,Corsair,201.56,360mm AIO liquid cooler,AM4/AM5/LGA1700/LGA1200
+163,Kraken Elite 360 RGB,Cooler,NZXT,236.03,360mm AIO liquid cooler with LCD,AM4/AM5/LGA1700/LGA1200
+164,Liquid Freezer III 420,Cooler,Arctic,195.27,420mm AIO liquid cooler,AM4/AM5/LGA1700/LGA1200/sTR5
