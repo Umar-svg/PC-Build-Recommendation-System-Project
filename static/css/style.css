@@ -379,11 +379,8 @@ body {
     grid-template-columns: 1fr;
     gap: 1.5rem;
 }
-@media (min-width: 900px) {
-    .builds-grid:has(.build-card + .build-card) {
-        grid-template-columns: 1fr 1fr;
-    }
-}
+/* Builds are stacked vertically (one per row) so each parts table gets the
+   full page width and the Price column is never cropped. */
 
 .build-card {
     background: white;
@@ -432,6 +429,13 @@ body {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.9rem;
+}
+/* Right-align the Price column (last cell) and stop it wrapping/cropping. */
+.parts-table th:last-child,
+.parts-table td:last-child {
+    text-align: right;
+    white-space: nowrap;
+    min-width: 90px;
 }
 .parts-table thead {
     background: var(--gray-50);
