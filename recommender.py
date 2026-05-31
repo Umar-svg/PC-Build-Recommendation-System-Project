@@ -531,18 +531,7 @@ def fetch_components_by_type(cursor):
     return by_type
 
 
-def build_one_recommendation(by_type, budget, purpose, build_preference="Balanced",
-                              force_gpu_brand=None, force_extra_hdd=None):
-    """
-    Generate one PC build.
-
-    Optional variant hints (used to make two different builds for the same request):
-      force_gpu_brand:  "nvidia" or "amd"  -> only consider GPUs of this brand.
-                        None                -> use the engine's default brand logic.
-      force_extra_hdd:  True   -> deliberately add a secondary HDD if budget allows.
-                        False  -> never add a secondary HDD.
-                        None   -> use the engine's original random behaviour.
-    """
+def build_one_recommendation(by_type, budget, purpose, build_preference="Balanced"):
     alloc = PURPOSE_ALLOC.get(purpose, PURPOSE_ALLOC["General Use"])
     cpu_tiers = CPU_TIERS.get(purpose, {})
     gpu_tiers = GPU_TIERS.get(purpose, {})
@@ -565,17 +554,6 @@ def build_one_recommendation(by_type, budget, purpose, build_preference="Balance
         ctype: filter_by_brand_preference(parts, ctype, purpose)
         for ctype, parts in by_type.items()
     }
-
-    # Variant override: if the caller explicitly wants a specific GPU brand,
-    # restrict the GPU pool to that brand. Used to make Build #2 differ from
-    # Build #1 (e.g. one NVIDIA build + one AMD build for Gaming).
-    if force_gpu_brand:
-        target_brand = force_gpu_brand.lower()
-        branded_gpus = [c for c in by_type.get("GPU", [])
-                        if (c.get("brand") or "").lower() == target_brand]
-        if branded_gpus:
-            by_type = dict(by_type)
-            by_type["GPU"] = branded_gpus
 
     usd_tolerance = 0.0
     if build_preference == "Maximum Performance":
@@ -693,27 +671,13 @@ def build_one_recommendation(by_type, budget, purpose, build_preference="Balance
         if random.random() < 0.7:
             ram_qty = 2
 
-    # Extra-storage decision:
-    #   - force_extra_hdd=True  -> always try to add a secondary HDD
-    #   - force_extra_hdd=False -> never add one
-    #   - force_extra_hdd=None  -> original random behaviour
     extra_storage = None
-    if force_extra_hdd is True:
+    if build_preference != "Budget Saver" and budget > 1200 and random.random() < 0.35:
         hdds = [c for c in by_type.get("Storage", [])
                 if "HDD" in (c["specifications"] or "")
                 and c["component_id"] != chosen["Storage"]["component_id"]]
         if hdds:
-            # Prefer a mid-priced HDD for predictability instead of random.
-            hdds.sort(key=lambda c: float(c["price"]))
-            extra_storage = hdds[len(hdds) // 2]
-    elif force_extra_hdd is None:
-        if build_preference != "Budget Saver" and budget > 1200 and random.random() < 0.35:
-            hdds = [c for c in by_type.get("Storage", [])
-                    if "HDD" in (c["specifications"] or "")
-                    and c["component_id"] != chosen["Storage"]["component_id"]]
-            if hdds:
-                extra_storage = random.choice(hdds)
-    # force_extra_hdd == False -> leave extra_storage as None
+            extra_storage = random.choice(hdds)
 
     total = sum(float(c["price"]) for c in chosen.values())
     if ram_qty == 2:
@@ -1228,96 +1192,77 @@ def build_one_recommendation(by_type, budget, purpose, build_preference="Balance
         total -= float(extra_storage["price"])
         extra_storage = None
 
+    # ---- AGGRESSIVE final enforcement ----
+    # The loop above only downgrades the single most-expensive part and stops
+    # as soon as one type has nothing cheaper. If we're STILL over budget,
+    # sweep every component type repeatedly, downgrading wherever possible,
+    # ignoring the balance rules (staying under budget matters more than
+    # perfect GPU/CPU ratios when money is tight).
+    def _calc_total():
+        t = sum(float(c["price"]) for c in chosen.values())
+        if ram_qty == 2: t += float(chosen["RAM"]["price"])
+        if extra_storage: t += float(extra_storage["price"])
+        return t
+
+    sweep_iterations = 60
+    while total > hard_cap and sweep_iterations > 0:
+        sweep_iterations -= 1
+        # Find the single best downgrade across ALL types that keeps
+        # compatibility and reduces total the most without breaking it.
+        best_swap = None      # (new_total, ctype, candidate)
+        for ctype in chosen:
+            current = chosen[ctype]
+            cur_price = float(current["price"])
+            cheaper = [c for c in by_type[ctype] if float(c["price"]) < cur_price]
+            if not cheaper:
+                continue
+            # Take the most expensive cheaper option that's compatible
+            cheaper.sort(key=lambda c: float(c["price"]), reverse=True)
+            for cand in cheaper:
+                test = dict(chosen); test[ctype] = cand
+                if check_compatibility(test):
+                    new_total = total - cur_price + float(cand["price"])
+                    # Prefer the swap that lands us closest to (but under) cap
+                    if best_swap is None or new_total < best_swap[0]:
+                        best_swap = (new_total, ctype, cand)
+                    break
+        if best_swap is None:
+            break  # nothing left to downgrade anywhere
+        _, ctype, cand = best_swap
+        chosen[ctype] = cand
+        total = _calc_total()
+
+    # Last resort: if STILL over budget, drop RAM second-kit / extra storage
+    if total > hard_cap and ram_qty == 2:
+        ram_qty = 1
+        total = _calc_total()
+    if total > hard_cap and extra_storage:
+        extra_storage = None
+        total = _calc_total()
+
     return {
         "components": chosen,
         "ram_qty": ram_qty,
         "extra_storage": extra_storage,
         "total_cost": round(total, 2),
+        "over_budget": total > hard_cap,   # flag so caller knows
     }
 
 
-def _build_signature(build):
-    """Return a hashable summary of the parts in a build. Two builds with the
-    same signature are effectively identical."""
-    ids = sorted(c["component_id"] for c in build["components"].values())
-    if build.get("extra_storage"):
-        ids.append(build["extra_storage"]["component_id"])
-    return tuple(ids)
-
-
 def generate_recommendations(conn, request_id, budget, purpose, build_preference="Balanced"):
-    """
-    Always tries to produce TWO distinct builds for each request:
-
-      Build #1 -> engine's default pick.
-      Build #2 -> deliberately different from Build #1, by swapping:
-                    * the GPU brand (NVIDIA <-> AMD), when the purpose allows it, AND
-                    * the secondary-storage choice (single SSD <-> SSD + HDD).
-
-    If neither variation is possible (very low budget, or AI/Video purpose
-    where AMD is blocked AND budget is too small for an extra HDD), only one
-    build is produced.
-    """
     cur = conn.cursor(dictionary=True)
     by_type = fetch_components_by_type(cur)
     cur.close()
 
-    # ---- Build 1: default engine pick ----
-    build1 = build_one_recommendation(by_type, budget, purpose, build_preference,
-                                       force_gpu_brand=None,
-                                       force_extra_hdd=None)
-
-    builds_to_save = []
-    if build1:
-        builds_to_save.append(build1)
-
-    # ---- Decide what Build 2 should look like, based on Build 1 ----
-    # GPU-brand swap is only meaningful when the purpose allows BOTH brands.
-    # (For Video Editing / AI / 3D Rendering, AMD is blocked because of CUDA.)
-    can_brand_swap = purpose not in NVIDIA_REQUIRED_PURPOSES
-
-    # HDD swap only makes sense if the budget can absorb the extra cost.
-    can_hdd_swap = budget >= 700
-
-    if build1 and (can_brand_swap or can_hdd_swap):
-        # Look at what Build 1 ended up with, then force the opposite.
-        b1_gpu_brand   = (build1["components"]["GPU"].get("brand") or "").lower()
-        b1_has_extra   = bool(build1.get("extra_storage"))
-
-        target_brand = None
-        if can_brand_swap:
-            target_brand = "amd" if b1_gpu_brand == "nvidia" else "nvidia"
-
-        target_extra_hdd = None
-        if can_hdd_swap:
-            target_extra_hdd = (not b1_has_extra)
-
-        # Try with both variations first.
-        build2 = build_one_recommendation(by_type, budget, purpose, build_preference,
-                                           force_gpu_brand=target_brand,
-                                           force_extra_hdd=target_extra_hdd)
-
-        # If Build 2 came out identical (e.g. the budget was too tight for the
-        # opposite-brand GPU to fit), retry forcing only one of the variations
-        # so the user still sees something different.
-        if build2 and _build_signature(build2) == _build_signature(build1):
-            if target_brand is not None:
-                build2 = build_one_recommendation(by_type, budget, purpose, build_preference,
-                                                   force_gpu_brand=target_brand,
-                                                   force_extra_hdd=None)
-            if build2 and _build_signature(build2) == _build_signature(build1) \
-                    and target_extra_hdd is not None:
-                build2 = build_one_recommendation(by_type, budget, purpose, build_preference,
-                                                   force_gpu_brand=None,
-                                                   force_extra_hdd=target_extra_hdd)
-
-        if build2 and _build_signature(build2) != _build_signature(build1):
-            builds_to_save.append(build2)
-
-    # ---- Save each finalised build to the database ----
+    n_builds = 2 if random.random() < 0.3 else 1
     created_ids = []
+
     cur = conn.cursor()
-    for build in builds_to_save:
+    for _ in range(n_builds):
+        build = build_one_recommendation(by_type, budget, purpose, build_preference)
+        if not build:
+            continue
+
         rec_date = date.today()
         cur.execute("""
             INSERT INTO Recommended_Build (total_cost, recommendation_date, request_id)
