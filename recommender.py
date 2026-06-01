@@ -504,17 +504,28 @@ NVIDIA_REQUIRED_PURPOSES = {"Video Editing", "AI & Model Training", "3D Renderin
 # For AI & Model Training, the user specifically wants Intel CPUs (not AMD/Threadripper)
 INTEL_PREFERRED_PURPOSES = {"AI & Model Training"}
 
+# Display-only / office GPUs that have no real compute or gaming muscle.
+# They should never be recommended for demanding workloads.
+WEAK_DISPLAY_GPUS = {"GeForce GT 1030 2GB", "Radeon RX 6400"}
+DEMANDING_PURPOSES = {"Gaming", "Streaming", "Gaming and Streaming",
+                      "Video Editing", "3D Rendering", "AI & Model Training"}
+
 
 def filter_by_brand_preference(parts, ctype, purpose):
     """Apply brand preference. Returns filtered list, or original if empty."""
     if ctype == "GPU" and purpose in NVIDIA_REQUIRED_PURPOSES:
         nvidia = [c for c in parts if (c.get("brand") or "").lower() == "nvidia"]
         if nvidia:
-            return nvidia
+            parts = nvidia
+    # Drop display-only GPUs for demanding workloads (no GT 1030 for editing/gaming)
+    if ctype == "GPU" and purpose in DEMANDING_PURPOSES:
+        real = [c for c in parts if c.get("component_name") not in WEAK_DISPLAY_GPUS]
+        if real:
+            parts = real
     if ctype == "CPU" and purpose in INTEL_PREFERRED_PURPOSES:
         intel = [c for c in parts if (c.get("brand") or "").lower() == "intel"]
         if intel:
-            return intel
+            parts = intel
     return parts
 
 
