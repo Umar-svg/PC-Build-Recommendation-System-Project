@@ -542,10 +542,21 @@ def fetch_components_by_type(cursor):
     return by_type
 
 
-def build_one_recommendation(by_type, budget, purpose, build_preference="Balanced"):
+def build_one_recommendation(by_type, budget, purpose, build_preference="Balanced",
+                             force_gpu_brand=None):
     alloc = PURPOSE_ALLOC.get(purpose, PURPOSE_ALLOC["General Use"])
     cpu_tiers = CPU_TIERS.get(purpose, {})
     gpu_tiers = GPU_TIERS.get(purpose, {})
+
+    # Optionally restrict the GPU pool to one brand so two builds for the same
+    # request can differ (one NVIDIA build, one AMD build). Only applied when
+    # that brand actually has cards available for this purpose.
+    if force_gpu_brand and "GPU" in by_type:
+        branded = [c for c in by_type["GPU"]
+                   if (c.get("brand") or "").lower() == force_gpu_brand.lower()]
+        if branded:
+            by_type = dict(by_type)
+            by_type["GPU"] = branded
 
     # Filter out workstation/server parts for consumer purposes.
     # Workstation parts are only appropriate for 3D Rendering and AI & Model Training
@@ -1265,15 +1276,42 @@ def generate_recommendations(conn, request_id, budget, purpose, build_preference
     by_type = fetch_components_by_type(cur)
     cur.close()
 
-    n_builds = 2 if random.random() < 0.3 else 1
     created_ids = []
 
-    cur = conn.cursor()
-    for _ in range(n_builds):
-        build = build_one_recommendation(by_type, budget, purpose, build_preference)
+    # Decide the brand plan for the two builds.
+    # For NVIDIA-only purposes (Video Editing, AI, 3D Rendering) an AMD build
+    # makes no sense, so we generate two NVIDIA builds at slightly different
+    # tiers instead. For everything else we give one NVIDIA and one AMD build
+    # so the user has a genuine choice to compare.
+    if purpose in NVIDIA_REQUIRED_PURPOSES:
+        brand_plan = ["NVIDIA", "NVIDIA"]
+    else:
+        brand_plan = ["NVIDIA", "AMD"]
+
+    builds_to_insert = []
+    seen_signatures = set()
+
+    for brand in brand_plan:
+        build = build_one_recommendation(by_type, budget, purpose,
+                                         build_preference, force_gpu_brand=brand)
         if not build:
             continue
+        # Signature = the set of chosen component IDs. Skip if identical to a
+        # build we already have (so we never show the same build twice).
+        sig = tuple(sorted(c["component_id"] for c in build["components"].values()))
+        if sig in seen_signatures:
+            continue
+        seen_signatures.add(sig)
+        builds_to_insert.append(build)
 
+    # Safety net: if we somehow ended up with nothing, make one default build.
+    if not builds_to_insert:
+        fallback = build_one_recommendation(by_type, budget, purpose, build_preference)
+        if fallback:
+            builds_to_insert.append(fallback)
+
+    cur = conn.cursor()
+    for build in builds_to_insert:
         rec_date = date.today()
         cur.execute("""
             INSERT INTO Recommended_Build (total_cost, recommendation_date, request_id)
